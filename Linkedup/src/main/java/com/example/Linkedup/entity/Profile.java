@@ -31,4 +31,7 @@ public class Profile {
 
     @Column(name = "cover_pic")
     private String coverPic;
+
+    @Column (name="isverified")
+    private Boolean isVerified;
 }
