@@ -10,3 +10,8 @@ public interface PostRepository extends JpaRepository <Post, UUID>{
 
     
 }
+
+
+
+
+

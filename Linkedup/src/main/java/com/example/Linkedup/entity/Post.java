@@ -21,4 +21,10 @@ private UUID owner;
 
 @Column(name="content")
  private String content;
+
+ @Column(columnDefinition = "json")
+ private String mediaUrl;
 }
+
+
+

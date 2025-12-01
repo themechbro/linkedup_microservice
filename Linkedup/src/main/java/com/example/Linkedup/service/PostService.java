@@ -28,5 +28,20 @@ public class PostService {
         postRepository.deleteById(postId);
         return true;
     }
+
+    public boolean updatePost(UUID postId, String content, String mediaUrl){
+        Post post = postRepository.findById(postId).orElse(null);
+        if(post==null) return false;
+
+        post.setContent(content);
+        post.setMediaUrl(mediaUrl);
+
+        postRepository.save(post);
+        return true;
+    }
 }
+
+
+
+
 
