@@ -34,4 +34,7 @@ public class Profile {
 
     @Column (name="isverified")
     private Boolean isVerified;
+
+    @Column(name="isbrand")
+    private Boolean isBrand;
 }
