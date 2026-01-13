@@ -37,4 +37,10 @@ public class Profile {
 
     @Column(name="isbrand")
     private Boolean isBrand;
+
+    @Column(name="website")
+    private String webSite;
+
+    @Column(name="industry")
+    private String induStry;
 }

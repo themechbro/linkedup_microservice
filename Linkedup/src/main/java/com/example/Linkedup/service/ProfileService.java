@@ -18,5 +18,9 @@ public class ProfileService {
         return repo.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Profile not found for user_id: " + userId));
     }
+
+    public Profile updateProfile(Profile profile) {
+        return repo.save(profile);
+    }
 }
 

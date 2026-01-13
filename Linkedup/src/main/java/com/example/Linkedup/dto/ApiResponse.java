@@ -1,5 +1,9 @@
 package com.example.Linkedup.dto;
 
+
+
+import java.time.Instant;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class ApiResponse {
     private boolean success;
     private String message;
+    private Instant timestamp;
 }

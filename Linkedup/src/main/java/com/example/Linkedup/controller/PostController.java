@@ -1,5 +1,6 @@
 package com.example.Linkedup.controller;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -59,14 +60,14 @@ public class PostController {
         Post post = postService.getPostById(postId);
         if (post == null) {
             return ResponseEntity.status(404).body(
-                new ApiResponse(false, "Post not found")
+                new ApiResponse(false, "Post not found", Instant.now())
             );
         }
 
         // 2. Check ownership
         if (!post.getOwner().equals(requesterId)) {
             return ResponseEntity.status(403).body(
-                new ApiResponse(false, "You are not allowed to delete this post")
+                new ApiResponse(false, "You are not allowed to delete this post", Instant.now())
             );
         }
 
@@ -74,7 +75,7 @@ public class PostController {
         postService.deletePost(postId);
 
         return ResponseEntity.ok(
-            new ApiResponse(true, "Post deleted successfully")
+            new ApiResponse(true, "Post deleted successfully", Instant.now())
         );
     }
 }
