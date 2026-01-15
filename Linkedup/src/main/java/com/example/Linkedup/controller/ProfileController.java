@@ -120,6 +120,70 @@ public ResponseEntity<?> updateIndustry(
     );
 }
 
+@PostMapping("/update-about/{user_id}")
+public ResponseEntity<?> updateAbout(
+    @PathVariable("user_id") UUID userId,
+    @RequestBody Map<String, String> body,
+    HttpServletRequest request
+){
+        String jwtUserId = (String) request.getAttribute("internalUserId");
+ if (!userId.toString().equals(jwtUserId)) {
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(new ApiResponse(false, "User mismatch", Instant.now()));
+    }
+
+    Profile profile = profileService.getProfileByUserId(userId);
+    
+    String about= body.get("about");
+if (about == null || about.trim().isEmpty()) {
+        return ResponseEntity.badRequest()
+            .body(new ApiResponse(false, "About cannot be empty", Instant.now()));
+    }
+
+    profile.setAbOut(about);
+    profileService.updateProfile(profile);
+
+    return ResponseEntity.ok(
+        new ApiResponse(true, "About Update Successfully", Instant.now())
+    );
+
+}
+
+@PostMapping("/update-companyhq/{user_id}")
+public ResponseEntity<?> updateCompanyHq(
+    @PathVariable("user_id") UUID userId,
+    @RequestBody Map <String, String> body,
+    HttpServletRequest request
+){
+    String jwtUserId = (String) request.getAttribute("internalUserId");
+    if (!userId.toString().equals(jwtUserId)) {
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(new ApiResponse(false, "User mismatch", Instant.now()));
+    }
+ Profile profile = profileService.getProfileByUserId(userId);
+ if (!Boolean.TRUE.equals(profile.getIsBrand())) {
+        return ResponseEntity.badRequest()
+            .body(new ApiResponse(false, "User not a Brand", Instant.now()));
+    }
+
+    String companySize= body.get("companysize");
+    String headQuarters= body.get("hq");
+
+    if ((companySize == null || companySize.trim().isEmpty()) && (headQuarters==null||headQuarters.trim().isEmpty())) {
+        return ResponseEntity.badRequest()
+            .body(new ApiResponse(false, "Company size and Headquarters must be filled", Instant.now()));
+    }
+    profile.setCompanySize(companySize);
+    profile.setHeadQuarters(headQuarters);
+    profileService.updateProfile(profile);
+
+    return ResponseEntity.ok(
+        new ApiResponse(true, "Company size and Headquarters Updated Successfully", Instant.now())
+    );
+}
+
 }
 
 

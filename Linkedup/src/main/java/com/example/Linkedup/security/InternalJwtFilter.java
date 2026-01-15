@@ -179,7 +179,9 @@ public class InternalJwtFilter extends OncePerRequestFilter {
         return !(
                 "POST".equalsIgnoreCase(method)
                 && path.startsWith("/api/profile/update-industry")||
-                path.startsWith("/api/profile/update-website")
+                path.startsWith("/api/profile/update-website")||
+                path.startsWith("/api/profile/update-about")||
+                path.startsWith("/api/profile/update-companyhq")
         );
     }
 }

@@ -43,4 +43,13 @@ public class Profile {
 
     @Column(name="industry")
     private String induStry;
+
+    @Column(name="about")
+    private String abOut;
+
+    @Column(name="companysize")
+    private String companySize;
+
+    @Column(name="hq")
+    private String headQuarters;
 }
