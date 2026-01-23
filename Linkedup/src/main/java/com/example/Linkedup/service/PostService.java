@@ -1,5 +1,6 @@
 package com.example.Linkedup.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import com.example.Linkedup.repository.PostRepository;
 public class PostService {
 
     private final PostRepository postRepository;
-
     // ✅ FIX: Constructor injection for the final field
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
@@ -20,6 +20,10 @@ public class PostService {
     public Post getPostById(UUID id) {
         return postRepository.findById(id).orElse(null);
     }
+
+   public List<Post> getPostByOwner(UUID owner){
+    return postRepository.findByOwner(owner);
+   }
 
     public boolean deletePost(UUID postId) {
         if (!postRepository.existsById(postId)) {
@@ -39,6 +43,7 @@ public class PostService {
         postRepository.save(post);
         return true;
     }
+
 }
 
 
