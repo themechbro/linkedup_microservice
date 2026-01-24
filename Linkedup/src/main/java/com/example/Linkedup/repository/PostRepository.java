@@ -16,6 +16,16 @@ public interface PostRepository extends JpaRepository <Post, UUID>{
     List<Post> findTop10ByOwnerOrderByCreatedAtDesc(UUID owner);
    List<Post> findByOwnerInOrderByCreatedAtDesc(List<UUID> owners);
 
+
+
+   @Query("""
+           SELECT p FROM Post p WHERE p.owner IN:owners
+           ORDER BY p.createdAt DESC
+           """)
+           List<Post> findFeedPage(
+    @Param("owners") List<UUID> owners,
+    org.springframework.data.domain.Pageable pageable
+);
     // repost originals (EXPLICIT QUERY — REQUIRED)
     @Query("SELECT p FROM Post p WHERE p.post_id IN :ids")
     List<Post> findRepostOriginals(@Param("ids") List<UUID> ids);

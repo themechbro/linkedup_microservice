@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Linkedup.dto.FeedPostDto;
@@ -19,20 +20,23 @@ import com.example.Linkedup.service.FeedService;
 @RestController
 @RequestMapping("/api/feed")
 public class FeedController {
+
     private final FeedService feedService;
 
-public FeedController(FeedService feedService){
-    this.feedService=feedService;
-}
+    public FeedController(FeedService feedService) {
+        this.feedService = feedService;
+    }
 
-@PostMapping
-public ResponseEntity<Map<UUID, List<FeedPostDto>>> getFeed(
-        @RequestBody List<UUID> connectionIds) {
+     @PostMapping
+    public ResponseEntity<List<FeedPostDto>> getFeed(
+            @RequestBody List<UUID> connectionIds,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "0") int offset
+    ) {
 
-    Map<UUID, List<FeedPostDto>> feed =
-        feedService.getFeedForConnections(connectionIds);
+        List<FeedPostDto> feed =
+                feedService.getFeedForConnections(connectionIds, limit, offset);
 
-    return ResponseEntity.ok(feed);
-}
-
+        return ResponseEntity.ok(feed);
+    }
 }

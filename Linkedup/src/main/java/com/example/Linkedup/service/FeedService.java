@@ -9,13 +9,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.Linkedup.dto.FeedPostDto;
 import com.example.Linkedup.entity.Post;
 import com.example.Linkedup.repository.PostRepository;
 
-@Service
+
+
+ @Service
 public class FeedService {
 
     private final PostRepository postRepository;
@@ -24,43 +29,53 @@ public class FeedService {
         this.postRepository = postRepository;
     }
 
-    public Map<UUID, List<FeedPostDto>> getFeedForConnections(List<UUID> connectionIds) {
+    public  List<FeedPostDto> getFeedForConnections(
+            List<UUID> connectionIds,
+            int limit,
+            int offset
+    ) {
 
-        // 1. Fetch all posts from connections (single query)
+        // 1. Pageable (LIMIT + OFFSET)
+        Pageable pageable = PageRequest.of(
+                offset / limit,
+                limit,
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        // 2. Fetch paginated feed posts
         List<Post> feedPosts =
-                postRepository.findByOwnerInOrderByCreatedAtDesc(connectionIds);
+                postRepository.findFeedPage(connectionIds, pageable);
 
-        // 2. Collect repost IDs (post_id of original posts)
+        // 3. Collect repost IDs
         Set<UUID> repostIds = feedPosts.stream()
                 .map(Post::getRepostOf)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // 3. Fetch original reposted posts (single query)
-   Map<UUID, Post> repostMap =
-        repostIds.isEmpty()
-            ? Map.of()
-            : postRepository.findRepostOriginals(new ArrayList<>(repostIds))
-                .stream()
-                .collect(Collectors.toMap(
-                    Post::getPost_id,
-                    post -> post
-                ));
-        // 4. Group by owner + attach reposted post
-        return feedPosts.stream()
-                .collect(Collectors.groupingBy(
-                        Post::getOwner,
-                        Collectors.mapping(post -> {
-                            FeedPostDto dto = new FeedPostDto(post);
+        // 4. Fetch repost originals
+        Map<UUID, Post> repostMap =
+                repostIds.isEmpty()
+                        ? Map.of()
+                        : postRepository.findRepostOriginals(new ArrayList<>(repostIds))
+                                .stream()
+                                .collect(Collectors.toMap(
+                                        Post::getPost_id,
+                                        post -> post
+                                ));
 
-                            if (post.getRepostOf() != null) {
-                                dto.setRepostedPost(
-                                        repostMap.get(post.getRepostOf())
-                                );
-                            }
+        // 5. Group + attach repost
+       return feedPosts.stream()
+    .map(post -> {
+        FeedPostDto dto = new FeedPostDto(post);
 
-                            return dto;
-                        }, Collectors.toList())
-                ));
+        if (post.getRepostOf() != null) {
+            dto.setRepostedPost(
+                repostMap.get(post.getRepostOf())
+            );
+        }
+
+        return dto;
+    })
+    .toList();
     }
 }
