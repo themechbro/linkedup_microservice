@@ -78,4 +78,32 @@ public class FeedService {
     })
     .toList();
     }
+
+public FeedPostDto getLatestPostId(List<UUID> connectionIds){
+        Pageable pageable= PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+
+        List<Post> posts = postRepository.findLatestPostFromConnections(connectionIds, pageable);
+
+    if (posts.isEmpty()) return null;
+
+    Post latest = posts.get(0);
+
+    FeedPostDto dto = new FeedPostDto(latest);
+
+    // handle repost
+    if (latest.getRepostOf() != null) {
+        Post original = postRepository
+                .findRepostOriginals(List.of(latest.getRepostOf()))
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        dto.setRepostedPost(original);
+    }
+
+    return dto;
+}
+
+
 }

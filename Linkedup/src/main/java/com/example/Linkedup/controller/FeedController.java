@@ -39,4 +39,13 @@ public class FeedController {
 
         return ResponseEntity.ok(feed);
     }
+
+
+ @PostMapping("/latest")
+public ResponseEntity<FeedPostDto> getLatestFeedPost(
+        @RequestBody List<UUID> connectionIds
+) {
+    FeedPostDto dto = feedService.getLatestPostId(connectionIds);
+    return ResponseEntity.ok(dto);
+}
 }
