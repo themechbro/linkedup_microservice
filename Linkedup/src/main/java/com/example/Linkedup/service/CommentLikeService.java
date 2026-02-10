@@ -3,6 +3,7 @@ import com.example.Linkedup.entity.Comment;
 import com.example.Linkedup.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -39,5 +40,12 @@ public class CommentLikeService {
         }
 
         return comment.getLikes();
+    }
+
+    public int commentLength(UUID postId){
+        List <Comment> comments= repo.findCommentsForSpecificPost(postId);
+        if(comments==null) return 0;
+        return comments.size();
+        
     }
 }

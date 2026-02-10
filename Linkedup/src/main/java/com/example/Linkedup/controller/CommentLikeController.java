@@ -33,6 +33,12 @@ public ResponseEntity<Map<String, Integer>> getLikes(@PathVariable UUID comment_
     return ResponseEntity.ok(Map.of("Total Likes", count));
 }
 
+@GetMapping("/{postId}/length")
+public ResponseEntity <Integer> getCommentLengthforSpecificPost(@PathVariable UUID postId){
+    int length= service.commentLength(postId);
+    return ResponseEntity.ok(length);
+}
+
 }
 
 

@@ -33,4 +33,7 @@ public class Comment {
 
     @Column(name = "likes")
     private int likes;
+
+    @Column(name="post_id")
+    private UUID postId;
 }
