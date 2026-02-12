@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Linkedup.dto.FeedPostDto;
 import com.example.Linkedup.entity.Post;
+import com.example.Linkedup.repository.CommentRepository;
 import com.example.Linkedup.repository.PostRepository;
 
 
@@ -24,9 +25,11 @@ import com.example.Linkedup.repository.PostRepository;
 public class FeedService {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    public FeedService(PostRepository postRepository) {
+    public FeedService(PostRepository postRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
+        this.commentRepository=commentRepository;
     }
 
     public  List<FeedPostDto> getFeedForConnections(
@@ -63,20 +66,41 @@ public class FeedService {
                                         post -> post
                                 ));
 
+
+// Comment Counts v 1.7.0
+List <UUID> postIds= feedPosts.stream().map(Post::getPost_id).toList();
+
+ Map<UUID, Long> commentCountMap =
+            commentRepository.countCommentsByPostIds(postIds)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            projection -> projection.getPostId(),
+                            projection -> projection.getCount()
+                    ));
+
+
         // 5. Group + attach repost
-       return feedPosts.stream()
-    .map(post -> {
-        FeedPostDto dto = new FeedPostDto(post);
+      return feedPosts.stream()
+            .map(post -> {
 
-        if (post.getRepostOf() != null) {
-            dto.setRepostedPost(
-                repostMap.get(post.getRepostOf())
-            );
-        }
+                long commentCount =
+                        commentCountMap.getOrDefault(
+                                post.getPost_id(),
+                                0L
+                        );
 
-        return dto;
-    })
-    .toList();
+                FeedPostDto dto =
+                        new FeedPostDto(post, commentCount);
+
+                if (post.getRepostOf() != null) {
+                    dto.setRepostedPost(
+                            repostMap.get(post.getRepostOf())
+                    );
+                }
+
+                return dto;
+            })
+            .toList();
     }
 
 public FeedPostDto getLatestPostId(List<UUID> connectionIds){
@@ -88,8 +112,18 @@ public FeedPostDto getLatestPostId(List<UUID> connectionIds){
     if (posts.isEmpty()) return null;
 
     Post latest = posts.get(0);
+//For version 1.7.0 commentCount
+    long commentCount =
+        commentRepository.countCommentsByPostIds(
+                List.of(latest.getPost_id())
+        )
+        .stream()
+        .findFirst()
+        .map(p -> p.getCount())
+        .orElse(0L);
 
-    FeedPostDto dto = new FeedPostDto(latest);
+FeedPostDto dto =
+        new FeedPostDto(latest, commentCount);
 
     // handle repost
     if (latest.getRepostOf() != null) {

@@ -75,8 +75,11 @@ public class FeedPostDto {
     private String reposterFullName;
     private String reposterProfilePicture;
 
+    // Comment Length
+    private long commentCount;
+
     // ─── CONSTRUCTOR ────────────────────────────────────
-    public FeedPostDto(Post post) {
+    public FeedPostDto(Post post, long commentCount) {
         this.postId = post.getPost_id();   // respecting your constraint
         this.owner = post.getOwner();
         this.content = post.getContent();
@@ -88,6 +91,7 @@ public class FeedPostDto {
         this.likedBy = post.getLikedBy();
         this.repostCount = post.getRepostCount();
         this.staTus = post.getStaTus();
+        this.commentCount= commentCount;
     }
 }
 

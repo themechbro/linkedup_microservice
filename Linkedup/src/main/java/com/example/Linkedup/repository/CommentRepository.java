@@ -1,6 +1,7 @@
 package com.example.Linkedup.repository;
 
 import com.example.Linkedup.entity.Comment;
+import com.example.Linkedup.projection.CommentCountProjection;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,16 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
         """)
     List <Comment> findCommentsForSpecificPost(@Param("postId") UUID postId);
 
+
+     @Query("""
+        SELECT c.postId as postId, COUNT(c) as count
+        FROM Comment c
+        WHERE c.postId IN :postIds
+        GROUP BY c.postId
+    """)
+    List<CommentCountProjection> countCommentsByPostIds(
+            @Param("postIds") List<UUID> postIds
+    );
 
 }
 
