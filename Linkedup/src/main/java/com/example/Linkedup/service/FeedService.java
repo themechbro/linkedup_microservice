@@ -104,14 +104,8 @@ List <UUID> postIds= feedPosts.stream().map(Post::getPost_id).toList();
     }
 
 public FeedPostDto getLatestPostId(List<UUID> connectionIds){
-        Pageable pageable= PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-
-        List<Post> posts = postRepository.findLatestPostFromConnections(connectionIds, pageable);
-
-    if (posts.isEmpty()) return null;
-
-    Post latest = posts.get(0);
+       Post latest= postRepository.findTopByOwnerInOrderByCreatedAtDesc(connectionIds);
+       if (latest == null) return null;
 //For version 1.7.0 commentCount
     long commentCount =
         commentRepository.countCommentsByPostIds(

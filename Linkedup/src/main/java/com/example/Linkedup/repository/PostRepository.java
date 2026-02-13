@@ -32,15 +32,18 @@ public interface PostRepository extends JpaRepository <Post, UUID>{
     List<Post> findRepostOriginals(@Param("ids") List<UUID> ids);
 
     
-@Query("""
-    SELECT p FROM Post p
-    WHERE p.owner IN :owners
-    ORDER BY p.createdAt DESC
-""")
-List<Post> findLatestPostFromConnections(
-        @Param("owners") List<UUID> owners,
-        Pageable pageable
-);
+// @Query("""
+//     SELECT p FROM Post p
+//     WHERE p.owner IN :owners
+//     ORDER BY p.createdAt DESC
+// """)
+// List<Post> findLatestPostFromConnections(
+//         @Param("owners") List<UUID> owners,
+//         Pageable pageable
+// );
+
+Post findTopByOwnerInOrderByCreatedAtDesc(List<UUID> owners);
+
 
 }
 
