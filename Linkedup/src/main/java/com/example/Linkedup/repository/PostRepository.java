@@ -2,6 +2,7 @@ package com.example.Linkedup.repository;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +18,15 @@ public interface PostRepository extends JpaRepository <Post, UUID>{
     List<Post> findTop10ByOwnerOrderByCreatedAtDesc(UUID owner);
    List<Post> findByOwnerInOrderByCreatedAtDesc(List<UUID> owners);
 
-
+@Query("""
+    SELECT p FROM Post p
+    WHERE p.owner = :owner
+    ORDER BY p.createdAt DESC
+""")
+Page<Post> findPostsofBrand(
+    @Param("owner") UUID owner,
+    Pageable pageable
+);
 
    @Query("""
            SELECT p FROM Post p WHERE p.owner IN:owners
@@ -43,7 +52,6 @@ public interface PostRepository extends JpaRepository <Post, UUID>{
 // );
 
 Post findTopByOwnerInOrderByCreatedAtDesc(List<UUID> owners);
-
 
 }
 
