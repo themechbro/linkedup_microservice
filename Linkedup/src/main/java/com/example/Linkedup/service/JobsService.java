@@ -1,11 +1,14 @@
 package com.example.Linkedup.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.example.Linkedup.dto.JobDto;
 import com.example.Linkedup.entity.Jobs;
 import com.example.Linkedup.repository.JobsRepository;
+import com.example.Linkedup.repository.ProfileRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JobsService {
     private final JobsRepository repo;
-
+    private final ProfileRepository repo2; 
 
   public Jobs getJobByJobID(UUID jobId){
    return repo.findByJobId(jobId).orElseThrow(()-> new RuntimeException("Job not found"));
@@ -32,4 +35,17 @@ repo.save(job);
 return job.getApplyCount();
 }
 
+
+
+public List <JobDto> ThreeJobsforBrand(UUID postedBy){
+
+
+List <Jobs> threeJob= repo.find3JobsByBrandProfilePage(postedBy);
+
+return threeJob.stream().map(job->{
+  JobDto dto= new JobDto(job);
+  return dto;
+}).toList();
+
+}
 }
