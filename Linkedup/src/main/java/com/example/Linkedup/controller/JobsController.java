@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.Linkedup.dto.JobDto;
-
-
+import com.example.Linkedup.dto.JobWithProfileDto;
 import com.example.Linkedup.service.JobsService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +29,7 @@ public class JobsController {
 
     @GetMapping("/get_jobs_for_brand_page/{postedBy}")
     public ResponseEntity<?> fetch3JobsforBrandPage(@PathVariable UUID postedBy){
-        List <JobDto> jobs= jobService.ThreeJobsforBrand(postedBy);
+        List <JobWithProfileDto> jobs= jobService.ThreeJobsforBrand(postedBy);
 
         return ResponseEntity.ok(jobs);
 

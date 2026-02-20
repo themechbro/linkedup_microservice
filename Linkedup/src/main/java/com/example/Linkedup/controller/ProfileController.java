@@ -60,29 +60,6 @@ public class ProfileController {
     }
 
 
-    // @PostMapping("/update-industry/{user_id}")
-    // public ResponseEntity<?> updateIndustry(@PathVariable("user_id")UUID userId, @RequestBody java.util.Map<String, String> body){
-    //     Profile profile= profileService.getProfileByUserId(userId);
-    //      // Check 1
-    //     if (!Boolean.TRUE.equals(profile.getIsBrand())) {
-    //         return ResponseEntity.status(400).body(new ApiResponse(false, "User not a Brand. Bad Gateway", Instant.now()));
-    //     }
-
-    //     String industry=body.get("industry");
-
-    //     // Check 2
-    //     if(industry==null|| industry.trim().isEmpty()){
-    //         return ResponseEntity.status(400).body(new ApiResponse(false, "Industry field cannot be empty", Instant.now()));
-    //     }
-
-    //     profile.setInduStry(industry);
-    //     profileService.updateProfile(profile);
-
-    //     return ResponseEntity.ok(new ApiResponse(true, "Industry Updated Successfully", Instant.now()));
-    // }
-
-
-
 
     @PostMapping("/update-industry/{user_id}")
 public ResponseEntity<?> updateIndustry(

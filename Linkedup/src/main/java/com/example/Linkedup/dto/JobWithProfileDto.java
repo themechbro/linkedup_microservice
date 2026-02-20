@@ -4,11 +4,12 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.example.Linkedup.entity.Jobs;
+import com.example.Linkedup.entity.Profile;
 
 import lombok.Data;
 
 @Data
-public class JobDto {
+public class JobWithProfileDto {
     private UUID jobId;
     private String title;
     private String company;
@@ -24,11 +25,11 @@ public class JobDto {
     private int applyCount;
 
 
+    private String username;
+    private String fullName;
+    private String profilePicture;
 
-    // 
-
-
-    public JobDto(Jobs job){
+    public JobWithProfileDto(Jobs job, Profile profile){
         this.jobId= job.getJobId();
         this.title= job.getTitle();
         this.company= job.getCompany();
@@ -42,6 +43,10 @@ public class JobDto {
         this.status= job.getStatus();
         this.applyLink= job.getApplyLink();
         this.applyCount= job.getApplyCount();
+
+        this.username= profile.getUsername();
+        this.fullName=profile.getFullName();
+        this.profilePicture=profile.getProfilePicture();
 
     }
 }

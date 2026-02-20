@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,8 @@ import com.example.Linkedup.dto.FeedResponseDto;
 // import com.example.Linkedup.dto.ApiResponse;
 import com.example.Linkedup.entity.Post;
 import com.example.Linkedup.service.FeedService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/feed")
@@ -33,11 +36,20 @@ public class FeedController {
     public ResponseEntity<List<FeedPostDto>> getFeed(
             @RequestBody List<UUID> connectionIds,
             @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "0") int offset
+            @RequestParam(defaultValue = "0") int offset,
+            HttpServletRequest request
     ) {
+// Securing route
+        String jwtUserId= (String) request.getAttribute("internalUserId");
+
+        if(jwtUserId==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UUID authenticateUserId= UUID.fromString(jwtUserId);
 
         List<FeedPostDto> feed =
-                feedService.getFeedForConnections(connectionIds, limit, offset);
+                feedService.getFeedForConnections(connectionIds, limit, offset, authenticateUserId);
 
         return ResponseEntity.ok(feed);
     }
@@ -45,9 +57,17 @@ public class FeedController {
 
  @PostMapping("/latest")
 public ResponseEntity<FeedPostDto> getLatestFeedPost(
-        @RequestBody List<UUID> connectionIds
+        @RequestBody List<UUID> connectionIds,
+        HttpServletRequest request
 ) {
-    FeedPostDto dto = feedService.getLatestPostId(connectionIds);
+// Securing route
+String jwtUserId= (String) request.getAttribute("internalUserId");
+ if(jwtUserId==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UUID authenticateUserId= UUID.fromString(jwtUserId);
+    FeedPostDto dto = feedService.getLatestPostId(connectionIds, authenticateUserId);
     return ResponseEntity.ok(dto);
 }
 

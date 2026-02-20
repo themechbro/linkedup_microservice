@@ -37,7 +37,11 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers(
                 HttpMethod.POST,
-                "/api/profile/update-industry/**"
+                "/api/profile/update-industry/**",
+                "/api/profile/update-website/**",
+                "/api/profile/update-about/**",
+                "/api/profile/update-companyhq/**",
+                "/api/feed/**"
             )
             .authenticated()
             .anyRequest().permitAll()

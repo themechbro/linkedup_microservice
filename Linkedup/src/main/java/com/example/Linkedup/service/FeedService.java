@@ -39,7 +39,8 @@ public class FeedService {
     public  List<FeedPostDto> getFeedForConnections(
             List<UUID> connectionIds,
             int limit,
-            int offset
+            int offset,
+            UUID authenticatedUserId
     ) {
 
         // 1. Pageable (LIMIT + OFFSET)
@@ -103,7 +104,7 @@ List <UUID> postIds= feedPosts.stream().map(Post::getPost_id).toList();
             .toList();
     }
 
-public FeedPostDto getLatestPostId(List<UUID> connectionIds){
+public FeedPostDto getLatestPostId(List<UUID> connectionIds, UUID authenticatedUserId){
        Post latest= postRepository.findTopByOwnerInOrderByCreatedAtDesc(connectionIds);
        if (latest == null) return null;
 //For version 1.7.0 commentCount
