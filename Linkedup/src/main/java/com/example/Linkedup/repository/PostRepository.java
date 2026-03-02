@@ -41,15 +41,15 @@ Page<Post> findPostsofBrand(
     List<Post> findRepostOriginals(@Param("ids") List<UUID> ids);
 
     
-// @Query("""
-//     SELECT p FROM Post p
-//     WHERE p.owner IN :owners
-//     ORDER BY p.createdAt DESC
-// """)
-// List<Post> findLatestPostFromConnections(
-//         @Param("owners") List<UUID> owners,
-//         Pageable pageable
-// );
+@Query("""
+    SELECT p FROM Post p
+    WHERE p.owner IN :owners
+    ORDER BY p.createdAt DESC, p.post_id DESC
+""")
+List<Post> findLatestPostFromConnections(
+        @Param("owners") List<UUID> owners,
+        Pageable pageable
+);
 
 Post findTopByOwnerInOrderByCreatedAtDesc(List<UUID> owners);
 

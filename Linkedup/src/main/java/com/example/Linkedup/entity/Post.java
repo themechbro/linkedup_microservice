@@ -47,7 +47,7 @@ private UUID owner;
   @Column (name="repost_count")
  private Integer repostCount;
 
- @Column (name="created_at")
+ @Column (name="created_at", nullable = false)
  private Instant createdAt;
 }
 
